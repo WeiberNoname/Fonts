@@ -1,6 +1,6 @@
 # GRID Fonts
 
-An experiment in building game fonts with code: sci-fi/HUD typefaces generated from a single 5×7 grid skeleton, exported as real `.ttf` files for Unreal Engine.
+An experiment in building game fonts with code: one 5×7 grid skeleton, many styles (sci-fi HUD, neon, F1 speed, monumental, cute dog-themed), exported as real `.ttf` files for Unreal Engine.
 
 ![Neon variants](previews/neon/neon-variants.png)
 
@@ -57,10 +57,34 @@ In the animation, letters drop one by one (gravity: accelerating fall), each lan
 
 **Ideas for Unreal:** boss names and chapter titles (Titan), ruins and ancient-temple signage (Fossil), and a camera shake plus dust Niagara burst timed to each letter landing for a title card.
 
+## v5: Pup (dog-themed match-3)
+
+![Pup specimen](previews/v5-pup/specimen.png)
+
+A match-3 game about dogs needs the opposite of Titan: **soft, round, chewable, happy**. The design moves:
+
+1. **Puffy round strokes:** every cell is a real curve-built circle (quadratic Béziers), joined by bars, so all ends and joints are rounded like plush toys or candy tiles. Overlaps are merged into clean outlines.
+2. **Paw-print dots:** the dots on `i` and `j` are replaced with a paw (one pad and four toes). Small detail, instant theme.
+3. **Bone endings (GRID Bone):** every stroke that ends gets two round knobs perpendicular to the stroke, like the end of a dog bone. The script finds endings automatically: cells with exactly one straight neighbour and no diagonal.
+4. **Match-3 presentation:** tile colours per letter, a thick dark cartoon outline and a soft drop shadow. In Unreal this is UMG Outline and Shadow settings, so no extra font is needed.
+
+**GRID Wag VF** has one custom axis, `SQSH` (-100 to 100). Negative values stretch (tall and narrow), positive values squash (short and wide), around the baseline. It's the classic animation principle of **squash and stretch**.
+
+![Bounce animation](previews/v5-pup/bounce.gif)
+
+In the animation, letters hop in a wave like an excited puppy. Each letter **squashes on landing and stretches in the air**, and its ground shadow shrinks while it's airborne. Key frames:
+
+![Bounce frames](previews/v5-pup/bounce-frames.png)
+
+**Ideas for Unreal:** combo text ("Good Boy!", "Pawsome!") bouncing in with Wag instances; Bone for score and buttons; paw-dot `i` in the title logo; a Niagara burst of paw prints on match.
+
 ## Fonts
 
 | Folder | Font | Type |
 |---|---|---|
+| `fonts/v5-pup` | GRID Puppy | static, puffy round strokes, paw-print dots |
+| | GRID Bone | static, bone-knob stroke endings |
+| | GRID Wag VF | variable: `SQSH` (stretch to squash) |
 | `fonts/v4-titan` | GRID Titan | static, ultra heavy, slab feet, pyramid flare |
 | | GRID Titan Fossil | static, Titan with cracked-stone splits |
 | | GRID Stomp VF | variable: `MASS` (light to monumental) |
@@ -83,6 +107,7 @@ python scripts/neon.py         # neon previews -> out2/neon/ (needs v2 built fir
 pip install skia-pathops       # needed by v3 for overlap removal
 python scripts/speedfont.py    # v3 speed fonts + previews -> out3/
 python scripts/titanfont.py    # v4 titan fonts + previews -> out4/
+python scripts/dogfont.py      # v5 pup fonts + previews -> out5/
 ```
 
 ## Unreal notes
