@@ -1,0 +1,5 @@
+build/
+build2/
+out/
+out2/
+__pycache__/
