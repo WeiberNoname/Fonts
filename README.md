@@ -1,6 +1,6 @@
 # GRID Fonts
 
-An experiment in building game fonts with code: one 5×7 grid skeleton, many styles (sci-fi HUD, neon, F1 speed, monumental, cute dog-themed), exported as real `.ttf` files for Unreal Engine.
+An experiment in building game fonts with code: one 5×7 grid skeleton, many styles (sci-fi HUD, neon, F1 speed, monumental, cute dog-themed, glitch, rune, ink brush), exported as real `.ttf` files for Unreal Engine.
 
 ![Neon variants](previews/neon/neon-variants.png)
 
@@ -10,8 +10,9 @@ An experiment in building game fonts with code: one 5×7 grid skeleton, many sty
 2. **Renderer**: each style decides how a cell becomes outlines.
    - v1 (`gridfont.py`): each cell becomes a square/chamfered dot (LED look).
    - v2 (`gridfont2.py`): neighbouring cells join into strokes, and lone diagonals become 45° cuts (futuristic look).
-3. **Export**: fontTools builds the glyphs, metrics and character map into `.ttf`. Variable fonts are built from 2–3 masters with identical point structure.
-4. **Neon** (`neon.py`): a preview renderer with a dead glass tube, wide bloom, tight halo, white-hot core and per-letter flicker.
+3. **Shared library** (`scripts/gridlib.py`, used from v6 on): skeleton structure, polygon clipping, curves, export and preview helpers, so each style script only contains its design ideas.
+4. **Export**: fontTools builds the glyphs, metrics and character map into `.ttf`. Variable fonts are built from 2–3 masters with identical point structure.
+5. **Neon** (`neon.py`): a preview renderer with a dead glass tube, wide bloom, tight halo, white-hot core and per-letter flicker.
 
 ## v3: Speed (F1-style racing fonts)
 
@@ -78,10 +79,80 @@ In the animation, letters hop in a wave like an excited puppy. Each letter **squ
 
 **Ideas for Unreal:** combo text ("Good Boy!", "Pawsome!") bouncing in with Wag instances; Bone for score and buttons; paw-dot `i` in the title logo; a Niagara burst of paw prints on match.
 
+## v6: Glitch (corrupted signal, horror / hacking)
+
+![Glitch specimen](previews/v6-glitch/specimen.png)
+
+Letters that look like a damaged video signal:
+
+1. **Band slicing:** every stroke polygon is cut into horizontal bands (52 units tall) with a thin slit between them, like scanlines.
+2. **Seeded shifts:** about 45% of the bands slide sideways by a random amount. The random seed is the glyph's name, so each letter is always corrupted the same way and the font stays consistent.
+3. **Dropouts:** some bands disappear entirely (5% in Glitch, 13% in Glitch Hard).
+
+**GRID Glitch VF** has a `GLCH` axis (0–100). At 0 the bands line up (clean, with scanlines); at 100 they're fully displaced. Because the slicing is identical in both masters and only the shift changes, the outlines stay compatible.
+
+![Glitch animation](previews/v6-glitch/glitch.gif)
+
+In the animation, `GLCH` sits calm with random spikes and a full meltdown in the middle. The renderer adds an **RGB channel split** that grows with corruption, **screen tears** (shifted horizontal strips) and CRT scanlines. Key frames (clean, mild, meltdown):
+
+![Glitch frames](previews/v6-glitch/glitch-frames.png)
+
+**Ideas for Unreal:** horror jump-scare text, hacking minigames, "signal lost" screens; drive a material's UV offset per band with noise for an in-engine version.
+
+## v7: Rune (carved fantasy)
+
+![Rune specimen](previews/v7-rune/specimen.png)
+
+Letters that look cut into stone with a chisel:
+
+1. **Chisel contrast:** vertical strokes are twice as thick as horizontal ones (92 vs 46 units), the way a flat chisel or broad pen makes thick downstrokes and thin cross-strokes.
+2. **Wedge spikes:** every stroke ending sharpens into a point, giving an aggressive, ancient-weapon feel. Lone dots become diamond gems.
+3. **V-groove carving (Rune Carved):** every stroke is split down its centre line with a thin gap, so each stroke reads as two bevelled faces, like a real inscription.
+
+**GRID Rune VF** has an `EDGE` axis (0–100) that grows the spikes from blunt stubs to long blades.
+
+![Awaken animation](previews/v7-rune/awaken.gif)
+
+In the animation, carved stone letters **ignite one by one** with a magic glow (bloom, halo and a hot core, the same pipeline as the neon fonts) and embers rising from the lit runes. Key frames:
+
+![Awaken frames](previews/v7-rune/awaken-frames.png)
+
+**Ideas for Unreal:** dungeon doors and ancient tablets (decals with an emissive material that lights up on interaction), spell names, fantasy quest titles.
+
+## v8: Sumi (ink brush)
+
+![Sumi specimen](previews/v8-ink/specimen.png)
+
+Bringing a brush feel to a rigid grid:
+
+1. **Brush pressure:** every stroke run starts thick (142%) and thins toward the end (42%), left to right and top to bottom, the way a brush loses ink as it moves.
+2. **Ink blobs and lift-off tips:** each joint is a round ink pool, and stroke endings taper to a sharp point where the brush leaves the paper.
+3. **Hand tremor:** each glyph is rotated up to ±2.5° and shifted up or down slightly (seeded, so it's consistent), so words don't look machine-set.
+4. **Dry brush (Sumi Dry):** thin streak gaps run along each stroke, like bristles running out of ink.
+
+**GRID Sumi VF** has an `INKS` axis (0–100), from a thin, dry brush to a heavy, wet one.
+
+![Brush animation](previews/v8-ink/brush.gif)
+
+In the animation, each letter is **painted by a brush sweep** on textured rice paper, with soft ink bleed at the edges, then a red **hanko seal** stamps down to finish. Key frames:
+
+![Brush frames](previews/v8-ink/brush-frames.png)
+
+**Ideas for Unreal:** samurai and martial-arts titles, Japanese-themed menus, story scrolls; animate a material mask sweep for the brush-reveal effect.
+
 ## Fonts
 
 | Folder | Font | Type |
 |---|---|---|
+| `fonts/v8-ink` | GRID Sumi | static, brush pressure, ink blobs, tremor |
+| | GRID Sumi Dry | static, dry-brush streaks |
+| | GRID Sumi VF | variable: `INKS` (dry thin to wet heavy) |
+| `fonts/v7-rune` | GRID Rune | static, chisel contrast, wedge spikes |
+| | GRID Rune Carved | static, V-groove carving |
+| | GRID Rune VF | variable: `EDGE` (blunt to spiked) |
+| `fonts/v6-glitch` | GRID Glitch | static, sliced and shifted bands |
+| | GRID Glitch Hard | static, heavy corruption |
+| | GRID Glitch VF | variable: `GLCH` (clean to corrupted) |
 | `fonts/v5-pup` | GRID Puppy | static, puffy round strokes, paw-print dots |
 | | GRID Bone | static, bone-knob stroke endings |
 | | GRID Wag VF | variable: `SQSH` (stretch to squash) |
@@ -108,6 +179,9 @@ pip install skia-pathops       # needed by v3 for overlap removal
 python scripts/speedfont.py    # v3 speed fonts + previews -> out3/
 python scripts/titanfont.py    # v4 titan fonts + previews -> out4/
 python scripts/dogfont.py      # v5 pup fonts + previews -> out5/
+python scripts/glitchfont.py   # v6 glitch -> out6/
+python scripts/runefont.py     # v7 rune -> out7/
+python scripts/inkfont.py      # v8 ink brush -> out8/ (needs v7 built for the seal)
 ```
 
 ## Unreal notes
