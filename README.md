@@ -36,10 +36,34 @@ The animation preview shows the text flying in with horizontal motion blur, brak
 
 **Ideas for Unreal:** drive the `SPED` look in-game by swapping exported instances (0/25/50/75/100) on boost; use Apex Streak for lap times and position banners; put a UMG animation with a quick X-translation and a blur material on title cards.
 
+## v4: Titan (monumental, "dinosaur" weight)
+
+![Titan specimen](previews/v4-titan/specimen.png)
+
+The brief was letters that feel **stable, heavy, super strong**, like a giant you could walk into. Four design moves:
+
+1. **Ultra-heavy strokes:** the stroke is about 19% of the cap height (Speed is about 12%), so counters shrink and the letters become solid mass.
+2. **Slab feet:** every stem that ends at the bottom gets a wide, thick slab, and stem tops get a smaller cap. The letters look planted on the ground.
+3. **Pyramid flare:** each glyph is scaled horizontally by height, about 30% wider at the baseline than at the top. Monuments, pyramids and a dinosaur's legs widen at the base, and that's what reads as *stable*.
+4. **Fossil cracks:** in **GRID Titan Fossil**, every letter gets 1–2 near-vertical crack gaps at seeded random positions, so each letter cracks differently and consistently, like a stone tablet.
+
+**GRID Stomp VF** has one custom axis, `MASS` (0–100). At 0 it's a light, plain monoline; at 100 it's full Titan (heavy, flared, slab-footed).
+
+![Stomp animation](previews/v4-titan/stomp.gif)
+
+In the animation, letters drop one by one (gravity: accelerating fall), each landing triggers **screen shake and a dust puff**, then "walk into it" gains `MASS` from 0 to 100. Key frames:
+
+![Stomp frames](previews/v4-titan/stomp-frames.png)
+
+**Ideas for Unreal:** boss names and chapter titles (Titan), ruins and ancient-temple signage (Fossil), and a camera shake plus dust Niagara burst timed to each letter landing for a title card.
+
 ## Fonts
 
 | Folder | Font | Type |
 |---|---|---|
+| `fonts/v4-titan` | GRID Titan | static, ultra heavy, slab feet, pyramid flare |
+| | GRID Titan Fossil | static, Titan with cracked-stone splits |
+| | GRID Stomp VF | variable: `MASS` (light to monumental) |
 | `fonts/v3-speed` | GRID Apex | static, heavy extended italic with speed cut |
 | | GRID Apex Streak | static, Apex plus motion streaks |
 | | GRID Throttle VF | variable: `SPED` (upright to race italic) |
@@ -58,6 +82,7 @@ python scripts/gridfont2.py    # v2 -> out2/
 python scripts/neon.py         # neon previews -> out2/neon/ (needs v2 built first)
 pip install skia-pathops       # needed by v3 for overlap removal
 python scripts/speedfont.py    # v3 speed fonts + previews -> out3/
+python scripts/titanfont.py    # v4 titan fonts + previews -> out4/
 ```
 
 ## Unreal notes
