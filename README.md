@@ -2,7 +2,26 @@
 
 An experiment in building game fonts with code: one 5×7 grid skeleton, many styles (sci-fi HUD, neon, F1 speed, monumental, cute dog-themed, glitch, rune, ink brush), exported as real `.ttf` files for Unreal Engine.
 
+![All GRID styles](previews/gallery.png)
+
+## Demo
+
+Every style comes with static fonts, a variable font with its own custom axis, and an animated demo.
+
+| | |
+|:---:|:---:|
+| **Neon**: glow and flicker<br>![Neon](previews/neon/neon-heavy-outline.gif) | **v2 Futuristic**: `wdth` + `slnt` morph<br>![Morph](previews/v2/morph.gif) |
+| **v3 Speed**: `SPED` axis, motion blur<br>![Speed](previews/v3-speed/speed.gif) | **v4 Titan**: stomp, shake and dust<br>![Stomp](previews/v4-titan/stomp.gif) |
+| **v5 Pup**: `SQSH` squash and stretch<br>![Bounce](previews/v5-pup/bounce.gif) | **v6 Glitch**: `GLCH` corruption<br>![Glitch](previews/v6-glitch/glitch.gif) |
+| **v7 Rune**: runes awaken<br>![Awaken](previews/v7-rune/awaken.gif) | **v8 Sumi**: brush reveal and seal<br>![Brush](previews/v8-ink/brush.gif) |
+
+**Jump to a style:** [Neon](#neon-variants) · [Speed](#v3-speed-f1-style-racing-fonts) · [Titan](#v4-titan-monumental-dinosaur-weight) · [Pup](#v5-pup-dog-themed-match-3) · [Glitch](#v6-glitch-corrupted-signal-horror--hacking) · [Rune](#v7-rune-carved-fantasy) · [Sumi](#v8-sumi-ink-brush) · [All fonts](#fonts)
+
+## Neon variants
+
 ![Neon variants](previews/neon/neon-variants.png)
+
+Five neon looks (thin, regular, thick, heavy double-tube outline, wide) rendered with `scripts/neon.py`: dead glass tube, wide bloom, tight halo, white-hot core, power-on stutter, brown-out and one buzzing broken tube per line.
 
 ## How it works
 
@@ -182,6 +201,7 @@ python scripts/dogfont.py      # v5 pup fonts + previews -> out5/
 python scripts/glitchfont.py   # v6 glitch -> out6/
 python scripts/runefont.py     # v7 rune -> out7/
 python scripts/inkfont.py      # v8 ink brush -> out8/ (needs v7 built for the seal)
+python scripts/gallery.py      # README overview -> previews/gallery.png (uses fonts/)
 ```
 
 ## Unreal notes
