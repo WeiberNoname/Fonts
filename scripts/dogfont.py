@@ -7,7 +7,7 @@ Run from repo root: python scripts/dogfont.py  ->  out5/
 """
 import math, io, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from skeleton import UP, LO
+from skeleton import UP, LO, SYM, CODE
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.designspaceLib import DesignSpaceDocument, AxisDescriptor, SourceDescriptor
@@ -19,7 +19,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 PY = 100
 CELLS = {k: {(c, r) for r, row in enumerate(v.split()) for c, ch in enumerate(row) if ch == "#"}
-         for k, v in {**UP, **LO}.items()}
+         for k, v in {**UP, **LO, **SYM}.items()}
 DOTS = {"i": (2, 0), "j": (3, 0)}           # cells that become paw prints
 
 def glyph(name, cells, w, px, lsb, bone=False, paw=True, sx=1.0, sy=1.0):
@@ -73,7 +73,7 @@ def build(family, path, w, px, lsb=55, bone=False, paw=True, sx=1.0, sy=1.0, mer
     order = [".notdef", "space"] + list(CELLS)
     fb = FontBuilder(1000, isTTF=True)
     fb.setupGlyphOrder(order)
-    fb.setupCharacterMap({32: "space", **{ord(k): k for k in CELLS}})
+    fb.setupCharacterMap({32: "space", **{CODE[k]: k for k in CELLS}})
     g = {n: TTGlyphPen(None).glyph() for n in (".notdef", "space")}
     g.update({k: glyph(k, cs, w, px, lsb, bone, paw, sx, sy) for k, cs in CELLS.items()})
     fb.setupGlyf(g)

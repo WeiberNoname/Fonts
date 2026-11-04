@@ -1,7 +1,7 @@
 """Shared machinery for GRID font styles: skeleton cells, glyph drawing, clipping, export, previews."""
 import math, io, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from skeleton import UP, LO
+from skeleton import UP, LO, SYM, CODE
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.designspaceLib import DesignSpaceDocument, AxisDescriptor, SourceDescriptor
@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 PY = 100
 CELLS = {k: {(c, r) for r, row in enumerate(v.split()) for c, ch in enumerate(row) if ch == "#"}
-         for k, v in {**UP, **LO}.items()}
+         for k, v in {**UP, **LO, **SYM}.items()}
 
 def pos(c, r, px, lsb, h):
     return (lsb + h + c * px, (6 - r) * PY + 50)
@@ -76,7 +76,7 @@ def build(family, path, fn, adv, merge=True):
     order = [".notdef", "space"] + list(CELLS)
     fb = FontBuilder(1000, isTTF=True)
     fb.setupGlyphOrder(order)
-    fb.setupCharacterMap({32: "space", **{ord(k): k for k in CELLS}})
+    fb.setupCharacterMap({32: "space", **{CODE[k]: k for k in CELLS}})
     g = {n: TTGlyphPen(None).glyph() for n in (".notdef", "space")}
     g.update({k: fn(k, cs) for k, cs in CELLS.items()})
     fb.setupGlyf(g)

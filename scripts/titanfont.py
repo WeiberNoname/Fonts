@@ -9,7 +9,7 @@ Run from repo root: python scripts/titanfont.py  ->  out4/
 import math, io, os, sys, random
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from skeleton import UP, LO
+from skeleton import UP, LO, SYM, CODE
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.designspaceLib import DesignSpaceDocument, AxisDescriptor, SourceDescriptor
@@ -21,7 +21,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 PY = 100
 CELLS = {k: {(c, r) for r, row in enumerate(v.split()) for c, ch in enumerate(row) if ch == "#"}
-         for k, v in {**UP, **LO}.items()}
+         for k, v in {**UP, **LO, **SYM}.items()}
 
 def poly(pen, pts):
     pts = [p for i, p in enumerate(pts) if p != pts[i - 1]]
@@ -74,7 +74,7 @@ def build(family, path, w, px, flare, foot, lsb=50, fossil=False, merge=True):
     order = [".notdef", "space"] + list(CELLS)
     fb = FontBuilder(1000, isTTF=True)
     fb.setupGlyphOrder(order)
-    fb.setupCharacterMap({32: "space", **{ord(k): k for k in CELLS}})
+    fb.setupCharacterMap({32: "space", **{CODE[k]: k for k in CELLS}})
     pad = (2 * px + w / 2) * flare * 0.65                       # room for the flared base / descenders
     L = lsb + pad
     def cracks(name):

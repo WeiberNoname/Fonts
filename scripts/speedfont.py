@@ -8,7 +8,7 @@ Run from repo root: python scripts/speedfont.py  ->  out3/
 import math, io, os, sys
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from skeleton import UP, LO
+from skeleton import UP, LO, SYM, CODE
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.designspaceLib import DesignSpaceDocument, AxisDescriptor, SourceDescriptor
@@ -20,7 +20,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 PY = 100
 CELLS = {k: {(c, r) for r, row in enumerate(v.split()) for c, ch in enumerate(row) if ch == "#"}
-         for k, v in {**UP, **LO}.items()}
+         for k, v in {**UP, **LO, **SYM}.items()}
 CUT_Y, CUT_K, GAP = 300, 0.22, 24          # speed cut: centre height, rise per unit x, gap thickness
 
 def poly(pen, pts):
@@ -73,7 +73,7 @@ def build(family, path, w, px, slant, lsb=40, cut=False, streak=False, merge=Tru
     order = [".notdef", "space"] + list(CELLS)
     fb = FontBuilder(1000, isTTF=True)
     fb.setupGlyphOrder(order)
-    fb.setupCharacterMap({32: "space", **{ord(k): k for k in CELLS}})
+    fb.setupCharacterMap({32: "space", **{CODE[k]: k for k in CELLS}})
     g = {".notdef": glyph(set(), w, px, 0, lsb), "space": glyph(set(), w, px, 0, lsb)}
     g.update({k: glyph(cs, w, px, slant, lsb, cut, streak) for k, cs in CELLS.items()})
     fb.setupGlyf(g)

@@ -11,11 +11,11 @@ from fontTools import varLib
 from fontTools.varLib import instancer
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFont
-from skeleton import UP, LO
+from skeleton import UP, LO, SYM, CODE
 
 PY, LSB = 100, 60   # row pitch, side bearing (units per em = 1000)
 CELLS = {k: {(c, r) for r, row in enumerate(v.split()) for c, ch in enumerate(row) if ch == "#"}
-         for k, v in {**UP, **LO}.items()}
+         for k, v in {**UP, **LO, **SYM}.items()}
 
 def quad(pen, pts):
     area = sum(pts[i][0] * pts[(i+1) % 4][1] - pts[(i+1) % 4][0] * pts[i][1] for i in range(4))
@@ -45,7 +45,7 @@ def build(family, w, px, slant, path):
     order = [".notdef", "space"] + list(CELLS)
     fb = FontBuilder(1000, isTTF=True)
     fb.setupGlyphOrder(order)
-    fb.setupCharacterMap({32: "space", **{ord(k): k for k in CELLS}})
+    fb.setupCharacterMap({32: "space", **{CODE[k]: k for k in CELLS}})
     g = {".notdef": glyph(set(), w, px, 0), "space": glyph(set(), w, px, 0)}
     g.update({k: glyph(cs, w, px, slant) for k, cs in CELLS.items()})
     fb.setupGlyf(g)
